@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link href="/bootstrap.min.css" rel="stylesheet">
+        <style>
+            .pad{
+                padding: 10px;
+            }
+        </style>
+    </head>
+    <body>
+        <table id="coursetable" class="table table-striped">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>coursename</th>
+                <th>price</th>
+                <th>imgurl</th>
+                <th>coursetype</th>
+                <th>bigimg</th>
+                <th>details</th>
+                <th>describes</th>
+                <th>videourl</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+        <div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="myModalLabel">提示</h3>
+                    </div>
+                    <div class="modal-body">删除成功</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="myModalLabel">提示</h3>
+                    </div>
+                    <div class="modal-body">更新成功</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="refresh()">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="upd" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h4 class="modal-title" id="myModalLabel">修改信息</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="pad">coursename：<input type="text"  id="coursename"></div>
+                        <div class="pad">price：<input type="text"  id="price"></div>
+                        <div class="pad">imgurl：<input type="text"  id="imgurl"></div>
+                        <div class="pad">coursetype：<input type="text"  id="coursetype"></div>
+                        <div class="pad">bigimg：<input type="text"  id="bigimg"></div>
+                        <div class="pad">details：<input type="text"  id="details"></div>
+                        <div class="pad">describes：<input type="text"  id="describes"></div>
+                        <div class="pad">videourl：<input type="text"  id="videourl"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" onclick="update()">提交更改</button>
+                    </div>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal -->
+        </div>
+        <script src="/jquery.min.js"></script>
+        <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+        <script src="/bootstrap.min.js"></script>
+        <script>
+
+            $.ajax({
+                url:"/checkcourse",
+                type: "get",
+                datatype:'json',
+                async: false,
+                success : function (data) {
+                    var json = data.course;
+                    var $tr = '';
+                    console.log(json);
+                    $.each(json, function (index, item) {
+                        //循环获取数据
+                        $tr += '<tr>';
+                        $tr +=  '<td>' + json[index].courseid + '</td>';
+                        $tr +=  '<td>' + json[index].coursename + '</td>';
+                        $tr +=  '<td>' + json[index].price + '</td>';
+                        $tr +=  '<td>' + json[index].imgurl + '</td>';
+                        $tr +=  '<td>' + json[index].coursetype + '</td>';
+                        $tr +=  '<td>' + json[index].bigimg + '</td>';
+                        $tr +=  '<td>' + json[index].details + '</td>';
+                        $tr +=  '<td>' + json[index].describes + '</td>';
+                        $tr +=  '<td>' + json[index].videourl + '</td>';
+                        $tr +=  '<td>' +
+                            '<button type="button"  class="btn btn-danger delete">删除</button>' +
+                            '<button type="button" class="btn btn-info update">更新</button>' +
+                            '</td>'
+                        $tr += '</tr>';
+                    });
+                    $("#coursetable").append($tr);
+                }
+            })
+            $(".delete").click(function(){
+                var nowid = $(this).parents("tr").find("td:first-child").html();
+
+                $.ajax({
+                    url:"/deletecourse",
+                    type: "post",
+                    datatype:'json',
+                    async: false,
+                    data: {
+                        "courseid": nowid,
+                    },
+                    success : function (data) {
+                        $('#myModal1').modal('show')
+                    }
+                })
+                $(this).parents("tr").remove();
+            });
+            $(".update").click(function(){
+                updid = $(this).parents("tr").find("td:first-child").html();
+                var arr = $(this).parents().prevAll();
+                $("#coursename").val(arr[7].innerHTML)
+                $("#price").val(arr[6].innerHTML)
+                $("#imgurl").val(arr[5].innerHTML)
+                $("#coursetype").val(arr[4].innerHTML)
+                $("#bigimg").val(arr[3].innerHTML)
+                $("#details").val(arr[2].innerHTML)
+                $("#describes").val(arr[1].innerHTML)
+                $("#videourl").val(arr[0].innerHTML)
+                $("#upd").modal('show')
+            });
+            function update() {
+                var coursename = $("#coursename").val()
+                var price = $("#price").val()
+                var imgurl = $("#imgurl").val()
+                var coursetype = $("#coursetype").val()
+                var bigimg = $("#bigimg").val()
+                var details = $("#details").val()
+                var describes = $("#describes").val()
+                var videourl = $("#videourl").val()
+
+                $.ajax({
+                    url:"/updatecourse",
+                    type: "post",
+                    datatype:'json',
+                    async: false,
+                    data: {
+                        "coursename": coursename,
+                        "price": price,
+                        "imgurl": imgurl,
+                        "coursetype": coursetype,
+                        "bigimg": bigimg,
+                        "details": details,
+                        "describes": describes,
+                        "videourl": videourl,
+                        "courseid": updid,
+                    },
+                    success : function (data) {
+                        $('#upd').modal('hide')
+                        $('#myModal2').modal('show');
+                    }
+                })
+            }
+            function refresh() {
+                location.reload()
+            }
+
+
+
+        </script>
+
+    </body>
+</html>

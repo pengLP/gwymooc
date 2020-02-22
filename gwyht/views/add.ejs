@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><%= title %></title>
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+        <link href="/bootstrap.min.css" rel="stylesheet">
+        <style type="text/css">
+            body{
+                width: 1000px;
+                margin: 0 auto;
+            }
+        </style>
+    </head>
+    <body>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="input1" class="col-sm-2 control-label">课程号</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="courseid" placeholder="courseid">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">课程名</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="coursename" placeholder="coursename">
+                </div>
+            </div><div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">价格</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="price" placeholder="price">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">图片路径</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="imgurl" placeholder="imgurl">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">课程类型</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="coursetype" placeholder="coursetype">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">大图</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="bigimg" placeholder="bigimg">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">详情</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="details" placeholder="details">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">描述</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="describes" placeholder="describes">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="input2" class="col-sm-2 control-label">视频路径</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="videourl" placeholder="videourl">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="button" class="btn btn-default" onclick="sumbit()">提交</button>
+                </div>
+            </div>
+        </form>
+        <div class="modal fade" id="addok" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="myModalLabel">成功提示</h3>
+                    </div>
+                    <div class="modal-body">添加成功</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="err" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                        <h3 id="myModalLabel">错误</h3>
+                    </div>
+                    <div class="modal-body">格式错误</div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/jquery.min.js"></script>
+        <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+        <script src="/bootstrap.min.js"></script>
+        <!--<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>-->
+        <script>
+            function sumbit() {
+                var courseid = $('#courseid').val();
+                var coursename = $('#coursename').val();
+                var price = $('#price').val();
+                var imgurl = $('#imgurl').val();
+                var coursetype = $('#coursetype').val();
+                var bigimg = $('#bigimg').val();
+                var details = $('#details').val();
+                var describes = $('#describes').val();
+                var videourl = $('#videourl').val();
+
+                $.ajax({
+                    url:"/addcourse",
+                    type: "post",
+                    datatype:'json',
+                    async:false,
+                    data: {
+                       "courseid": courseid,
+                       "coursename": coursename,
+                       "price": price,
+                       "imgurl": imgurl,
+                       "coursetype": coursetype,
+                       "bigimg": bigimg,
+                       "details": details,
+                       "describes": describes,
+                       "videourl": videourl
+                    },
+                    success : function (data) {
+                        console.log(data.code)
+                        if(data.code=='200'){
+                            $('#addok').modal('show')
+                        }
+                        if(data.code=='601'){
+                            $("#err .modal-body").text('课程号重复')
+                            $('#err').modal('show')
+                        }
+                        if(data.code=='602'){
+                            $("#err .modal-body").text('课程类型应为1-4的整数')
+                            $('#err').modal('show')
+                        }
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>

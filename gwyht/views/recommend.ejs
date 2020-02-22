@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">推荐课程1</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="hotid1"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">推荐课程2</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="hotid2"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">推荐课程3</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="hotid3"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">推荐课程4</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="hotid4"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">推荐课程5</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="hotid5"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default" onclick="tuijian()">提交</button>
+            </div>
+        </div>
+    </form>
+    <form class="form-horizontal" role="form">
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">新上课程1</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="newid1"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">新上课程2</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="newid2"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">新上课程3</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="newid3"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">新上课程4</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="newid4"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="input1" class="col-sm-2 control-label">新上课程5</label>
+            <div class="col-sm-10">
+                <select class="form-control" id="newid5"></select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="button" class="btn btn-default" onclick="xinke()">提交</button>
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="tuijianmsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 id="myModalLabel">提示</h3>
+                </div>
+                <div class="modal-body"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/jquery.min.js"></script>
+    <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
+    <script src="/bootstrap.min.js"></script>
+    <script>
+        $.ajax({
+            url: "/checkcourse",
+            dataType: "json",
+            success: function (data) {
+                var json = data.course
+                $.each(json, function (index, item) {
+                    $("#hotid1").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#hotid2").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#hotid3").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#hotid4").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#hotid5").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#newid1").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#newid2").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#newid3").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#newid4").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                    $("#newid5").append("<option value="+json[index].courseid+">" + json[index].courseid + "</option>");
+                });
+            },
+
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("error");
+            }
+        });
+        function tuijian() {
+            var hotid1 = $("#hotid1").val();
+            var hotid2 = $("#hotid2").val();
+            var hotid3 = $("#hotid3").val();
+            var hotid4 = $("#hotid4").val();
+            var hotid5 = $("#hotid5").val();
+            $.ajax({
+                url:"/tuijian",
+                type: "post",
+                datatype:'json',
+                async: false,
+                data: {
+                    hotid1:hotid1,
+                    hotid2:hotid2,
+                    hotid3:hotid3,
+                    hotid4:hotid4,
+                    hotid5:hotid5,
+                },
+                success : function (data) {
+                    $("#tuijianmsg .modal-body").text('热门课程推荐成功')
+                    $('#tuijianmsg').modal('show')
+                }
+            })
+        }
+        function xinke() {
+            var newid1 = $("#newid1").val();
+            var newid2 = $("#newid2").val();
+            var newid3 = $("#newid3").val();
+            var newid4 = $("#newid4").val();
+            var newid5 = $("#newid5").val();
+            $.ajax({
+                url:"/xinke",
+                type: "post",
+                datatype:'json',
+                async: false,
+                data: {
+                    newid1:newid1,
+                    newid2:newid2,
+                    newid3:newid3,
+                    newid4:newid4,
+                    newid5:newid5,
+                },
+                success : function (data) {
+                    $("#tuijianmsg .modal-body").text('新课推荐成功')
+                    $('#tuijianmsg').modal('show')
+                }
+            })
+        }
+    </script>
+</body>
+</html>
